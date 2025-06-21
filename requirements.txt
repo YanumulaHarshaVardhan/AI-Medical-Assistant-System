@@ -1,13 +1,16 @@
 streamlit
 pandas
-speechrecognition
+SpeechRecognition
 googletrans==4.0.0rc1
 gTTS
-# For file handling, temp dirs (built-in, no pip needed): tempfile, os
 
-# Optional: if using microphone/audio input
+# Optional: audio input/output libraries
 sounddevice
 soundfile
-cgi
-# OR use PyAudio if needed, but make sure portaudio is pre-installed:
+
+# Avoid cgi: it's deprecated and removed in Python 3.13
+# DO NOT include `cgi` — it's built-in in Python <3.13, removed in 3.13+
+
+# PyAudio is tricky to install without system dependencies, prefer sounddevice/soundfile if possible
+# If absolutely needed and portaudio is installed:
 # pyaudio==0.2.14
