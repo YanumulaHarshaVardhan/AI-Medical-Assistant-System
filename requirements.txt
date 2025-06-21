@@ -8,6 +8,6 @@ gTTS
 # Optional: if using microphone/audio input
 sounddevice
 soundfile
-
+cgi
 # OR use PyAudio if needed, but make sure portaudio is pre-installed:
 # pyaudio==0.2.14
