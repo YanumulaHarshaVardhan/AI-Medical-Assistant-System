@@ -1,13 +1,13 @@
 streamlit
 pandas
+speechrecognition
+googletrans==4.0.0rc1
 gTTS
-googletrans==4.0.0-rc1
-SpeechRecognition
-numpy
-openai
-rich
-# If you're using sounddevice instead of PyAudio:
+# For file handling, temp dirs (built-in, no pip needed): tempfile, os
+
+# Optional: if using microphone/audio input
 sounddevice
 soundfile
-# OR if sticking with PyAudio, make sure portaudio is installed first
-pyaudio==0.2.14
+
+# OR use PyAudio if needed, but make sure portaudio is pre-installed:
+# pyaudio==0.2.14
