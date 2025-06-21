@@ -2,27 +2,24 @@ import streamlit as st
 import pandas as pd
 import re
 import speech_recognition as sr
-from googletrans import Translator
+from translate import Translator
 from gtts import gTTS
 import os
 import tempfile
 
-
 # Load dataset
 df = pd.read_csv("symptom_data.csv")
 
-translator = Translator()
+# Initialize Translator (auto-detect is not available, so default to 'en')
+translator = Translator(to_lang="en")
+
 st.set_page_config(page_title="AI Medical Voice Assistant", layout="wide")
 st.title("🎙️🩺 AI Medical Voice Assistant")
-st.write("Speak or type your symptom in any language (English, Hindi, Telugu...)")
+st.write("Speak or type your symptom in your language (English, Hindi, Telugu...)")
 
-# Initialize variable
+# Input setup
 speech_text = ""
-
-# Text input (always available)
 text_input = st.text_input("Or type your symptom 👇", "")
-
-# Voice input
 use_voice = st.button("🎤 Start Listening")
 
 if use_voice:
@@ -36,28 +33,17 @@ if use_voice:
         st.markdown(f"🗣️ You said: **{speech_text}**")
     except Exception as e:
         st.error(f"🎙️ Microphone error: {e}")
-        speech_text = ""  # Prevents recognizer error
+        speech_text = ""
 
-# Use text input if no voice input or if voice failed
 if not speech_text and text_input:
     speech_text = text_input
 
-# Continue only if we have some symptom text
 if speech_text:
     try:
-        # Detect language
-        detected_lang = translator.detect(speech_text).lang
-        st.markdown(f"🌐 Detected Language: `{detected_lang}`")
-
-        # Translate to English
-        translated_text = translator.translate(
-            speech_text, dest='en').text.lower()
+        translated_text = translator.translate(speech_text).lower()
         st.markdown(f"📝 Translated Text: `{translated_text}`")
 
-        # Extract keywords
         keywords = re.findall(r'\b\w+\b', translated_text)
-
-        # Match symptoms
         matches = df[df['symptom'].apply(
             lambda x: any(kw in x.lower() for kw in keywords))]
 
@@ -71,14 +57,8 @@ if speech_text:
                 f"👨‍⚕️ See Doctor If: {row['doctor_advice']}"
             st.text_area("💡 Medical Advice", value=result, height=200)
 
-            # Translate result
-            result_translated = translator.translate(
-                result, dest=detected_lang).text
-            st.markdown("🌍 **Translated Medical Advice:**")
-            st.success(result_translated)
-
-            # Speak result
-            tts = gTTS(text=result_translated, lang=detected_lang)
+            # Voice Output
+            tts = gTTS(text=result, lang="en")
             with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
                 temp_path = fp.name
                 tts.save(temp_path)
@@ -87,6 +67,5 @@ if speech_text:
             os.remove(temp_path)
         else:
             st.warning("❌ No matching symptom found.")
-
     except Exception as e:
         st.error(f"❌ Error while processing: {e}")
