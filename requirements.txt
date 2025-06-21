@@ -3,4 +3,11 @@ pandas
 gTTS
 googletrans==4.0.0-rc1
 SpeechRecognition
+numpy
+openai
+rich
+# If you're using sounddevice instead of PyAudio:
+sounddevice
+soundfile
+# OR if sticking with PyAudio, make sure portaudio is installed first
 pyaudio==0.2.14
